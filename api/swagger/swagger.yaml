@@ -18,7 +18,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /dailyStatus/years/{year}/month/{month}/day/{day}:
+  /dailyStatus/year/{year}/month/{month}/day/{day}:
     # binds a127 app logic to a route
     x-swagger-router-controller: dailyStatusController
     get:
@@ -69,6 +69,8 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         # responses may fall through to errors
         default:
           description: Error
@@ -112,6 +114,12 @@ definitions:
       workItem:
         type: string
       nextWorkItem:
+        type: string
+      year:
+        type: string
+      month:
+        type: string
+      day:
         type: string
   User:
     required:
