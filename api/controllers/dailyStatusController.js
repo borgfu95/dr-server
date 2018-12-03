@@ -15,7 +15,6 @@ class dailyStatusController {
       });
       res.status(200).send(results);
     }).catch(function (error) {
-      console.log(error);
       res.status(500).send({message: 'Get failed'});
     });
   }
@@ -24,7 +23,6 @@ class dailyStatusController {
     let data = req.body;
     return new db.dailyStatusModel(data, false).save(function (err, data) {
       if (err) {
-        console.log(error);
         return res.status(500).send({message: 'Save failed'});
       }
       return res.status(200).send({message: 'Save success'});

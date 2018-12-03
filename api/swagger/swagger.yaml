@@ -91,7 +91,28 @@ paths:
       responses:
         "200":
           description: Success
+          schema:
+            $ref: "#/definitions/LoginResult"
         # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /user/register:
+    x-swagger-router-controller: userController
+    post:
+      tags: 
+        - User
+      description: User register
+      operationId: register
+      parameters:
+        - $ref: "#/parameters/UserLoginBody"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         default:
           description: Error
           schema:
@@ -135,6 +156,12 @@ definitions:
       - message
     properties:
       message:
+        type: string
+  LoginResult:
+    required:
+      - userName
+    properties:
+      userName:
         type: string
 parameters:
   AddDailyStatusBody:
