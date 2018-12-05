@@ -9,15 +9,20 @@ class userController {
     return db.userModel.findOne({userName: userName, password: password}, {_id: 0}).then(function (data) {
       return res.status(200).send({userName: data._doc.userName});
     }).catch(function (error) {
-      return res.status(500).send({message: 'Login failed'});
+      return res.status(500).send({message: 'User name or password error'});
     });
   }
 
   static register (req, res) {
     let userName = req.body.userName;
     let password = req.body.password;
-    return new db.userModel({userName: userName, password: password}, false).save().then(function (data) {
-      return res.status(200).send({message: 'Register success'});
+    return db.userModel.findOne({userName: userName}).then(function (user) {
+      if (user) {
+        return res.status(400).send({message: 'User already register'});
+      }
+      return new db.userModel({userName: userName, password: password}, false).save().then(function (data) {
+        return res.status(200).send({message: 'Register success'});
+      })
     }).catch(function (error) {
       return res.status(500).send({message: 'Register failed'});
     });
