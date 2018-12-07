@@ -18,6 +18,21 @@ class dailyStatusController {
       res.status(500).send({message: 'Get failed'});
     });
   }
+  
+  static getUserDailyStatus (req, res) {
+    let year = req.swagger.params.year.value;
+    let month = req.swagger.params.month.value;
+    let day = req.swagger.params.day.value;
+    let engineer = req.swagger.params.engineer.value;
+    return db.dailyStatusModel.findOne({engineer: engineer, year: year, month: month, day:day}, {_id: 0, _v: 0}).then(function (data) {
+      if (data) {
+        res.status(200).send(data._doc);
+      }
+      res.status(404).send({message: 'No daily status found'});
+    }).catch(function (error) {
+      res.status(500).send({message: 'Get failed'});
+    });
+  }
 
   static addUserDailyStatus (req, res) {
     let data = req.body;
@@ -32,5 +47,6 @@ class dailyStatusController {
 
 module.exports = {
   getDailyStatusByDate: dailyStatusController.getDailyStatusByDate,
-  addUserDailyStatus: dailyStatusController.addUserDailyStatus
+  addUserDailyStatus: dailyStatusController.addUserDailyStatus,
+  getUserDailyStatus: dailyStatusController.getUserDailyStatus
 };

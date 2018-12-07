@@ -77,6 +77,46 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"
 
+  /dailyStatus/engineer/{engineer}/year/{year}/month/{month}/day/{day}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: dailyStatusController
+    get:
+      tags: 
+        - DailyStatus
+      description: Get user daily status
+      # used as the method name of the controller
+      operationId: getUserDailyStatus
+      parameters:
+        - name: engineer
+          in: path
+          description: The engineer of the daily status report
+          required: true
+          type: string
+        - name: year
+          in: path
+          description: The year of the daily status report
+          required: true
+          type: string
+        - name: month
+          in: path
+          description: The month of the daily status report
+          required: true
+          type: string
+        - name: day
+          in: path
+          description: The day of the daily status report
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/DailyStatus"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /user/login:
     # binds a127 app logic to a route
     x-swagger-router-controller: userController
@@ -113,6 +153,45 @@ paths:
           description: Success
           schema:
             $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+            
+  /user/changePassword:
+    x-swagger-router-controller: userController
+    post:
+      tags: 
+        - User
+      description: Change user password
+      operationId: changePassword
+      parameters:
+        - $ref: "#/parameters/UserLoginBody"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /mail/sendMail:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: mailController
+    post:
+      tags: 
+        - Mail
+      description: Send mail
+      # used as the method name of the controller
+      operationId: sendMail
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        # responses may fall through to errors
         default:
           description: Error
           schema:
