@@ -8,7 +8,6 @@ let userSchema = new Schema({
 {
   timestamps: true
 });
+let userModel = mongoose.model('userModel', userSchema);
 
-module.exports = {
-  userSchema: userSchema
-};
+module.exports = userModel;

@@ -56,22 +56,35 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
   /dailyStatus:
-    # binds a127 app logic to a route
     x-swagger-router-controller: dailyStatusController
     post:
       tags: 
         - DailyStatus
       description: Add user daily status
-      # used as the method name of the controller
       operationId: addUserDailyStatus
       parameters:
-        - $ref: "#/parameters/AddDailyStatusBody"
+        - $ref: "#/parameters/AddOrUpdateDailyStatusBody"
       responses:
         "200":
           description: Success
           schema:
             $ref: "#/definitions/ErrorResponse"
-        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      tags: 
+        - DailyStatus
+      description: Update user daily status
+      operationId: updateUserDailyStatus
+      parameters:
+        - $ref: "#/parameters/AddOrUpdateDailyStatusBody"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/ErrorResponse"
         default:
           description: Error
           schema:
@@ -176,6 +189,25 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+            
+  /user/list:
+    x-swagger-router-controller: userController
+    get:
+      tags: 
+        - User
+      description: Get user list
+      operationId: getUserList
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
 
   /mail/sendMail:
     # binds a127 app logic to a route
@@ -186,6 +218,8 @@ paths:
       description: Send mail
       # used as the method name of the controller
       operationId: sendMail
+      parameters:
+        - $ref: "#/parameters/SendMailBody"
       responses:
         "200":
           description: Success
@@ -230,6 +264,12 @@ definitions:
         type: string
       password:
         type: string
+  Mail:
+    required:
+      - content
+    properties:
+      content:
+        type: string
   ErrorResponse:
     required:
       - message
@@ -243,7 +283,7 @@ definitions:
       userName:
         type: string
 parameters:
-  AddDailyStatusBody:
+  AddOrUpdateDailyStatusBody:
     name: body
     description: The daily status to be added to local db.
     in: body
@@ -257,3 +297,10 @@ parameters:
     required: true
     schema:
       $ref: "#/definitions/User"
+  SendMailBody:
+    name: body
+    description: The send mail body.
+    in: body
+    required: true
+    schema:
+      $ref: "#/definitions/Mail"

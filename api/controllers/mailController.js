@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 
 class mailController {
   static sendMail (req, res) {
-    let html = req.body.conntant;
+    let html = req.body.content;
     let host = 'mail2.augmentum.com.cn';
     let userName = 'borgfu@augmentum.com.cn';
     let password = '111111';
@@ -27,12 +27,12 @@ class mailController {
     let date = new Date();
     let day = date.getDate().toString().length > 1 ? date.getDate() : '0' + date.getDate()
     option.subject = '[Services - CloudSearch] DailyStatus_' + (date.getMonth() + 1) + day + date.getFullYear();
-    option.html= "邮件内容：<br/>这是来自nodemailer发送的邮件！iVan";
+    option.html= html;
     transporter.sendMail(option, function(error, response){
         if(error){
-            console.log("fail: " + error);
+          return res.status(500).send({message: 'Send email failed'});
         }else{
-            console.log("success: " + response.message);
+          return res.status(200).send({message: 'Send email success'});
         }
     });
   }

@@ -13,9 +13,9 @@ class dailyStatusController {
       let results = _.map(data, function (item) {
         return item._doc;
       });
-      res.status(200).send(results);
+      return res.status(200).send(results);
     }).catch(function (error) {
-      res.status(500).send({message: 'Get failed'});
+      return res.status(500).send({message: 'Get failed'});
     });
   }
   
@@ -26,27 +26,38 @@ class dailyStatusController {
     let engineer = req.swagger.params.engineer.value;
     return db.dailyStatusModel.findOne({engineer: engineer, year: year, month: month, day:day}, {_id: 0, _v: 0}).then(function (data) {
       if (data) {
-        res.status(200).send(data._doc);
+        return res.status(200).send(data._doc);
       }
-      res.status(404).send({message: 'No daily status found'});
+      return res.status(404).send({message: 'No daily status found'});
     }).catch(function (error) {
-      res.status(500).send({message: 'Get failed'});
+      return res.status(500).send({message: 'Get failed'});
     });
   }
 
-  static addUserDailyStatus (req, res) {
+  static addOrUpdateUserDailyStatus (req, res) {
     let data = req.body;
-    return new db.dailyStatusModel(data, false).save(function (err, data) {
-      if (err) {
-        return res.status(500).send({message: 'Save failed'});
+    let condition = {engineer: data.engineer, year: data.year, month: data.month, day: data.day};
+    let doc = {
+      workOn: data.workOn,
+      workItem: data.workItem,
+      nextWorkItem: data.nextWorkItem
+    };
+    let options = {
+      upsert: true,
+      new: true
+    }
+     return db.dailyStatusModel.findOneAndUpdate(condition, doc, options).then(function (data) {
+      if (data) {
+        return res.status(200).send({message: 'Update success'});
       }
-      return res.status(200).send({message: 'Save success'});
-    });
+      return res.status(500).send({message: 'Update failed'});
+     });
   }
 }
 
 module.exports = {
   getDailyStatusByDate: dailyStatusController.getDailyStatusByDate,
-  addUserDailyStatus: dailyStatusController.addUserDailyStatus,
-  getUserDailyStatus: dailyStatusController.getUserDailyStatus
+  addUserDailyStatus: dailyStatusController.addOrUpdateUserDailyStatus,
+  getUserDailyStatus: dailyStatusController.getUserDailyStatus,
+  updateUserDailyStatus: dailyStatusController.addOrUpdateUserDailyStatus
 };
